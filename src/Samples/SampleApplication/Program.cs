@@ -56,6 +56,22 @@ namespace SampleApplication
                 Console.WriteLine("Failed!");
             }
 
+            var ver = Assembly.GetEntryAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                .InformationalVersion;
+
+
+
+            var logEngine = LogApplicationVersion
+                .To
+                .SqlDatabase(connectionString)
+                .WithNodeName("Local Machine")
+                .WithApplicationVersion(ver)
+                .Build();
+
+            logEngine.PerformLog();
+
+
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine();
             Console.WriteLine("Press any key to delete your database and continue");

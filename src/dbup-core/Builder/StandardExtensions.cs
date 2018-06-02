@@ -602,4 +602,21 @@ public static class StandardExtensions
     {
         return WithScripts(builder, new EmbeddedScriptsProvider(assemblies, filter, encoding));
     }
+    /// <summary>
+    /// Set the node name
+    /// </summary>
+    /// <param name="builder">The builder</param>
+    /// <param name="nodeName"></param>
+    /// <returns>The same builder</returns>
+    public static LogApplicationUpgradeBuilder WithNodeName(this LogApplicationUpgradeBuilder builder, string nodeName)
+    {
+        builder.Configure(c => c.NodeName = nodeName);
+        return builder;
+    }
+
+    public static LogApplicationUpgradeBuilder WithApplicationVersion(this LogApplicationUpgradeBuilder builder, string versionName)
+    {
+        builder.Configure(c => c.ApplicationVersion = versionName);
+        return builder;
+    }
 }
