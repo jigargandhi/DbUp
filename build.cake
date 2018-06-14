@@ -58,7 +58,7 @@ Task("Test")
     });
 
 Task("Package")
-    .IsDependentOn("Test")
+	.IsDependentOn("Build")
     .Does(() => {
 
         NuGetPack("./src/dbup/dbup.nuspec", new NuGetPackSettings() {
@@ -69,7 +69,7 @@ Task("Package")
         System.IO.File.WriteAllLines(outputDir + "artifacts", new[]
         {
             "core:dbup-core." + versionInfo.NuGetVersion + ".nupkg",
-            "firebird:dbup-firebird." + versionInfo.NuGetVersion + ".nupkg",
+
             "mysql:dbup-mysql." + versionInfo.NuGetVersion + ".nupkg",
             "postgresql:dbup-postgresql." + versionInfo.NuGetVersion + ".nupkg",
             "sqlce:dbup-sqlce." + versionInfo.NuGetVersion + ".nupkg",

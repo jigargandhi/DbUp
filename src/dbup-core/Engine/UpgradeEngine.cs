@@ -68,11 +68,23 @@ namespace DbUp.Engine
                     foreach (var script in scriptsToExecute)
                     {
                         executedScriptName = script.Name;
+                        var csharpscriptname = executedScriptName.Replace(".sql", ".csx");
 
                         configuration.ScriptExecutor.Execute(script, configuration.Variables);
-
+#if NET46
+                        CSharpScript csscript = configuration.CSharpScripts.Where(p => p.Name == csharpscriptname).FirstOrDefault();
+                        if (csscript != null)
+                        {
+                            configuration.CSharpScriptExecutor.Execute(csscript, configuration.ScriptOptions, configuration);
+                        }
+#endif
                         executed.Add(script);
                     }
+
+                    //foreach (CSharpScript script in configuration)
+                    //{
+
+                    //}
 
                     configuration.Log.WriteInformation("Upgrade successful");
                     return new DatabaseUpgradeResult(executed, true, null);

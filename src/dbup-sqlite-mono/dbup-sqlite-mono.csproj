@@ -4,7 +4,7 @@
     <Description>DbUp makes it easy to deploy and upgrade SQL Server databases. This package adds SQLite support for Mono.</Description>
     <Title>DbUp SQLite Support targeting Mono</Title>
     <Authors>Paul Stovell;Jim Burger;Jake Ginnivan;Damian Maclennan</Authors>
-    <TargetFrameworks>net40;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <AssemblyName>dbup-sqlite-mono</AssemblyName>
     <AssemblyOriginatorKeyFile>../dbup.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>

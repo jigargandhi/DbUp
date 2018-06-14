@@ -5,7 +5,9 @@ using DbUp.Engine.Filters;
 using DbUp.Engine.Output;
 using DbUp.Engine.Transactions;
 using DbUp.Support;
-
+#if NET46
+using Microsoft.CodeAnalysis.Scripting;
+#endif
 namespace DbUp.Builder
 {
     /// <summary>
@@ -99,7 +101,15 @@ namespace DbUp.Builder
         /// Determines if variables should be replaced in scripts before they are run.
         /// </summary>
         public bool VariablesEnabled { get; set; }
+#if NET46
+        public ICSharpScriptExecutor CSharpScriptExecutor { get; set; }
 
+        public List<CSharpScript> CSharpScripts { get; internal set; }
+
+#pragma warning disable CS3003 // Type is not CLS-compliant
+        public ScriptOptions ScriptOptions { get; internal set; } = ScriptOptions.Default;
+#pragma warning restore CS3003 // Type is not CLS-compliant
+#endif
         /// <summary>
         /// Ensures all expectations have been met regarding this configuration.
         /// </summary>

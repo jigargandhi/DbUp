@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text;
 using DbUp;
@@ -10,7 +11,9 @@ using DbUp.Engine.Output;
 using DbUp.Engine.Transactions;
 using DbUp.ScriptProviders;
 using DbUp.Support;
-
+#if NET46
+using Microsoft.CodeAnalysis.Scripting;
+#endif
 /// <summary>
 /// Configuration extensions for the standard stuff.
 /// </summary>
@@ -174,7 +177,7 @@ public static class StandardExtensions
     /// </returns>
     public static UpgradeEngineBuilder WithScripts(this UpgradeEngineBuilder builder, params SqlScript[] scripts)
     {
-        return WithScripts(builder, (IEnumerable<SqlScript>) scripts);
+        return WithScripts(builder, (IEnumerable<SqlScript>)scripts);
     }
 
     /// <summary>
@@ -204,7 +207,7 @@ public static class StandardExtensions
         var script = new SqlScript(name, contents);
         return WithScripts(builder, script);
     }
-    
+
     /// <summary>
     /// Adds a single IScript instance to the upgrader.
     /// </summary>
@@ -264,7 +267,7 @@ public static class StandardExtensions
     /// </returns>
     public static UpgradeEngineBuilder WithScriptsFromFileSystem(this UpgradeEngineBuilder builder, string path, Func<string, bool> filter)
     {
-        return WithScripts(builder, new FileSystemScriptProvider(path, new FileSystemScriptOptions() {Filter = filter}));
+        return WithScripts(builder, new FileSystemScriptProvider(path, new FileSystemScriptOptions() { Filter = filter }));
     }
 
     /// <summary>
@@ -278,7 +281,7 @@ public static class StandardExtensions
     /// </returns>
     public static UpgradeEngineBuilder WithScriptsFromFileSystem(this UpgradeEngineBuilder builder, string path, Encoding encoding)
     {
-        return WithScripts(builder, new FileSystemScriptProvider(path, new FileSystemScriptOptions() {Encoding = encoding}));
+        return WithScripts(builder, new FileSystemScriptProvider(path, new FileSystemScriptOptions() { Encoding = encoding }));
     }
 
     /// <summary>
@@ -293,7 +296,7 @@ public static class StandardExtensions
     /// </returns>
     public static UpgradeEngineBuilder WithScriptsFromFileSystem(this UpgradeEngineBuilder builder, string path, Func<string, bool> filter, Encoding encoding)
     {
-        return WithScripts(builder, new FileSystemScriptProvider(path, new FileSystemScriptOptions() {Filter = filter, Encoding = encoding}));
+        return WithScripts(builder, new FileSystemScriptProvider(path, new FileSystemScriptOptions() { Filter = filter, Encoding = encoding }));
     }
 
     /// <summary>
@@ -462,7 +465,7 @@ public static class StandardExtensions
     /// <returns></returns>
     public static UpgradeEngineBuilder WithVariable(this UpgradeEngineBuilder builder, string variableName, string value)
     {
-        return WithVariables(builder, new Dictionary<string, string> {{variableName, value}});
+        return WithVariables(builder, new Dictionary<string, string> { { variableName, value } });
     }
 
     /// <summary>
@@ -602,4 +605,27 @@ public static class StandardExtensions
     {
         return WithScripts(builder, new EmbeddedScriptsProvider(assemblies, filter, encoding));
     }
+#if NET46
+    public static UpgradeEngineBuilder WithDefaultScriptExecutor(this UpgradeEngineBuilder builder, IDbConnection connection)
+    {
+        var executor = new DefaultCSharpScriptExecutor();
+        executor.SetDBConnection(connection);
+        builder.Configure(c => c.CSharpScriptExecutor = executor);
+        
+        return builder;
+    }
+
+    public static UpgradeEngineBuilder WithCSharpScriptsFromAssembly(this UpgradeEngineBuilder builder, Assembly[] assembly)
+    {
+        builder.Configure(c => c.CSharpScripts = new CSharpScriptProvider(assembly).GetScripts());
+        return builder;
+    }
+
+    public static UpgradeEngineBuilder WithCSharpScriptsOptions(this UpgradeEngineBuilder builder, ScriptOptions options)
+    {
+        builder.Configure(c => c.ScriptOptions = options);
+        
+        return builder;
+    }
+#endif
 }

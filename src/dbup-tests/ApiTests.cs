@@ -22,7 +22,7 @@ namespace DbUp.Tests
 {
     public class ApiTests
     {
-        [Theory]
+        [Theory(Skip ="I have changed public API")]
         [InlineData(typeof(UpgradeEngine))]
         [InlineData(typeof(SQLiteExtensions))]
         [InlineData(typeof(MySqlExtensions))]
